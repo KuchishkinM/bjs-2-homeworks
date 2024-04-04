@@ -10,15 +10,16 @@ class AlarmClock {
       throw new Error('Отсутствуют обязательные аргументы')
     }
 
-    if (this.alarmCollection.find(item => item.time === item)) {
+    if (this.alarmCollection.find(alarm => alarm.time === time)) {
       console.warn('Уже присутствует звонок на это же время')
-    } else {
-      this.alarmCollection.push({
-        time,
-        callback,
-        canCall: true
-      })
     }
+
+    this.alarmCollection.push({
+      time,
+      callback,
+      canCall: true
+    })
+
   };
 
   removeClock(time) {
@@ -36,13 +37,15 @@ class AlarmClock {
     }
 
     this.intervalId = setInterval(() => {
-      this.alarmCollection.forEach((item) => {
-        if (item.time === this.getCurrentFormattedTime() && item.canCall) {
-          item.canCall = false
-          item.callback()
+      const currentTime = this.getCurrentFormattedTime();
+
+      this.alarmCollection.forEach(item => {
+        if (item.time === currentTime && item.canCall) {
+          item.canCall = false;
+          item.callback();
         }
-      })
-    }, 1000)
+      });
+    }, 1000);
   }
 
   stop() {
@@ -60,3 +63,9 @@ class AlarmClock {
     this.alarmCollection = []
   }
 }
+
+// Все работает, если вернуться к первому варианту. Только имя аргумента колбека поменял. Не знаю, что еще нужно сделать(
+const clock = new AlarmClock();
+const callback = f => f;
+clock.addClock("16:45", callback);
+clock.addClock("16:45", callback);
